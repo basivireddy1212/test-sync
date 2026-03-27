@@ -10,7 +10,7 @@ group:
   # second group
   # first group
   - files:
-      - source: test.txt
+      - source: test1.txt
         dest: test1.txt
     repos: |
       devopslab1729/github-workflows

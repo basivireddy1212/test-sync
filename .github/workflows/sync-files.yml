@@ -23,4 +23,7 @@ jobs:
             file-sync
             automerge
           PR_BODY: This is your custom PR Body
+          COMMIT_PREFIX: "chore: sync files"
+          SKIP_PR: true
+          SYNC_CONFIG: .github/sync.yml
           
