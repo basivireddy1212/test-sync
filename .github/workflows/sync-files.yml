@@ -20,9 +20,20 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@v1
         with:
-          app-id: ${{ secrets.APP_ID }}
+          app-id: ${{ vars.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
-  
+      - name: run
+        run: |
+          ls -la
+          git clone https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/devopslab1729/test123.git
+          cd test123
+          ls -la
+          date=${date +s%}
+          echo $date > date.txt
+          git add date.txt
+          git commit -m "test"
+          git push
+          
       - name: Run GitHub File Sync
         uses: BetaHuhn/repo-file-sync-action@v1
         with:
