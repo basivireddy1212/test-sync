@@ -1,3 +1,206 @@
+Using a **GitHub App token in GitHub Actions** is the best practice for secure automation (better than PATs). Here’s a **clear, production-ready setup** for GitHub.
+
+---
+
+# 🚀 1. Create & Configure GitHub App
+
+Go to:
+
+```
+https://github.com/settings/apps
+```
+
+### Required settings:
+
+* ✅ Repository permissions:
+
+  * Contents → **Read & Write**
+  * Metadata → **Read**
+* ✅ Install App:
+
+  * Install on your account/org
+  * Select repo(s) OR “All repositories”
+
+---
+
+# 🔐 2. Store Secrets in Repo
+
+Go to:
+
+```
+Repo → Settings → Secrets → Actions
+```
+
+Add:
+
+| Secret Name       | Value                           |
+| ----------------- | ------------------------------- |
+| `APP_ID`          | GitHub App ID                   |
+| `APP_PRIVATE_KEY` | Private key (.pem file content) |
+
+👉 Paste full `.pem` content:
+
+```
+-----BEGIN RSA PRIVATE KEY-----
+...
+-----END RSA PRIVATE KEY-----
+```
+
+---
+
+# ⚙️ 3. GitHub Actions Workflow (Working Example)
+
+```yaml
+name: Use GitHub App Token
+
+on:
+  workflow_dispatch:
+
+jobs:
+  app-auth:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+          owner: basivireddy1212
+          repositories: test-sync
+
+      - name: Checkout using App Token
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Test API
+        run: |
+          curl -H "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
+          https://api.github.com/repos/basivireddy1212/test-sync
+```
+
+---
+
+# ✅ 4. Use Token for Git Operations
+
+### Clone / Push
+
+```bash
+git clone https://x-access-token:${TOKEN}@github.com/OWNER/REPO.git
+```
+
+### Example in workflow:
+
+```yaml
+- name: Push changes
+  run: |
+    git config user.name "github-app[bot]"
+    git config user.email "github-app[bot]@users.noreply.github.com"
+    
+    echo "test" >> file.txt
+    git add .
+    git commit -m "Update via GitHub App"
+    
+    git push https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/basivireddy1212/test-sync.git
+```
+
+---
+
+# 🔁 5. Multi-Repo Access (Important)
+
+If syncing across repos:
+
+```yaml
+with:
+  owner: basivireddy1212
+  repositories: repo1,repo2,repo3
+```
+
+---
+
+# ⚠️ Common Errors & Fixes
+
+### ❌ `Integration not found`
+
+👉 Fix:
+
+* App not installed on repo
+* Repo not selected during install
+
+---
+
+### ❌ `Resource not accessible by integration`
+
+👉 Fix:
+
+* Missing permissions (e.g., Contents: Write)
+
+---
+
+### ❌ 404 on `/installation`
+
+👉 Fix:
+
+* Wrong owner/repo
+* App installed in different account
+
+---
+
+# 🔒 Why GitHub App Token is Better
+
+| Feature                  | GitHub App | PAT |
+| ------------------------ | ---------- | --- |
+| Scoped per repo          | ✅          | ❌   |
+| Short-lived token        | ✅ (1 hr)   | ❌   |
+| Secure for CI/CD         | ✅          | ⚠️  |
+| Fine-grained permissions | ✅          | ❌   |
+
+---
+
+# 💡 Pro Tips (DevOps Level)
+
+### ✔ Always specify owner + repositories
+
+Avoid auto-detection issues:
+
+```yaml
+owner: basivireddy1212
+repositories: test-sync
+```
+
+---
+
+### ✔ Use bot identity
+
+```bash
+github-app[bot]
+```
+
+---
+
+### ✔ Rotate keys periodically
+
+Regenerate private key if exposed
+
+---
+
+# 🧠 Key Takeaway
+
+> GitHub App token works **only if the app is installed on the target repo**
+> → Your previous error was exactly this issue
+
+---
+
+If you want, I can:
+
+* 🔁 Build **multi-repo sync workflow (like repo-file-sync-action but with App token + signed commits)**
+* 🔐 Add **GPG commit signing using GitHub App**
+* 🏗️ Provide **enterprise-grade reusable workflow template**
+
+
+
 Adding **GPG commit signing with a GitHub App token in GitHub Actions** is doable—but there’s one important reality:
 
 > 🚨 **GitHub Apps do NOT sign commits themselves**
