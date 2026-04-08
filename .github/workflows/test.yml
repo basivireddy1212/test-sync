@@ -33,3 +33,16 @@ jobs:
         run: |
           curl -H "Authorization: Bearer ${{ steps.app-token.outputs.token }}" \
           https://api.github.com/repos/basivireddy1212/test-sync
+
+      - name: Push changes
+        run: |
+          git config user.name "github-app[bot]"
+          git config user.email "github-app[bot]@users.noreply.github.com"
+          
+          echo "test" >> file.txt
+          git add .
+          git commit -m "Update via GitHub App"
+          
+          git push https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/basivireddy1212/test-sync.git
+
+          
