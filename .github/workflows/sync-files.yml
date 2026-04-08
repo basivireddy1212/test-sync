@@ -25,14 +25,14 @@ jobs:
       - name: run
         run: |
           ls -la
-          git clone https://${{ steps.app-token.outputs.token }}@github.com/basivireddy1212/test123.git
-          cd test123
+          #git clone https://github.com/basivireddy1212/test.git
+          #cd test123
           ls -la
-          date=${date +s%}
-          echo $date > date.txt
-          git add date.txt
-          git commit -m "test"
-          git push
+          #date=${date +s%}
+          #echo $date > date.txt
+          #git add date.txt
+          #git commit -m "test"
+          #git push
           
       - name: Run GitHub File Sync
         uses: BetaHuhn/repo-file-sync-action@v1
