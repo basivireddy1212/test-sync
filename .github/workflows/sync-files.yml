@@ -25,7 +25,7 @@ jobs:
       - name: run
         run: |
           ls -la
-          git clone https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/devopslab1729/test123.git
+          git clone https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/basivireddy1212/test123.git
           cd test123
           ls -la
           date=${date +s%}
