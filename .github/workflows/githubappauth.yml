@@ -43,7 +43,7 @@ jobs:
       - name: Configure Git
         run: |
           git config --global user.name "github-app[bot]"
-          git config --global user.email basivireddy1212@gmail.com"
+          git config --global user.email "basivireddy1212@gmail.com"
           
           git config --global user.signingkey ${{ secrets.GPG_KEY_ID }}
           git config --global commit.gpgsign true
