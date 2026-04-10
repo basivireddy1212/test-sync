@@ -5,8 +5,8 @@
 group:
   # first group
   - files:
-      - source: test.txt
-        dest: test.txt
+      - source: test123.txt
+        dest: test123.txt
     repos: |
       basivireddy1212/test
 
